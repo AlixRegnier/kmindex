@@ -15,7 +15,7 @@
 	url = https://github.com/Neargye/semver
 [submodule "thirdparty/kmtricks"]
 	path = thirdparty/kmtricks
-	url = https://github.com/tlemane/kmtricks
+	url = https://github.com/Alix/kmtricks
 [submodule "thirdparty/atomic_queue"]
 	path = thirdparty/atomic_queue
 	url = https://github.com/max0x7ba/atomic_queue
