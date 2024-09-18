@@ -3,6 +3,7 @@
 #include <kmindex/mer.hpp>
 #include <kmindex/query/query_results.hpp>
 #include <kmindex/index/kindex.hpp>
+#include <BlockDecompressor.hpp>
 #include <sys/mman.h>
 
 namespace kmq {
@@ -10,20 +11,23 @@ namespace kmq {
   partition::partition(const std::string& matrix_path, std::size_t nb_samples, std::size_t width)
     : m_nb_samples(nb_samples), m_bytes(((nb_samples * width) + 7) / 8)
   {
-    m_fd = open(matrix_path.c_str(), O_RDONLY);
-    m_mapped = mio::mmap_source(m_fd, 0, mio::map_entire_file);
-    posix_madvise(&m_mapped[0], m_mapped.length(), POSIX_MADV_SEQUENTIAL);
+    //matrix_path value is determined by a redefined index_infos function
+    //blocks0 --- blocks0_ef
+    ptr_bd = make_unique<BlockDecompressor>(matrix_path + "/../../config_1024.cfg", matrix_path, matrix_path + "_ef");
+    /*m_fd = open(matrix_path.c_str(), O_RDONLY);
+    m_mapped = mio::mmap_source(m_fd, 0, mio::map_entire_file);*/
+    //posix_madvise(&m_mapped[0], m_mapped.length(), POSIX_MADV_SEQUENTIAL);
   }
 
   partition::~partition()
   {
-    m_mapped.unmap();
-    close(m_fd);
+    /*m_mapped.unmap();
+    close(m_fd);*/
   }
 
   void partition::query(std::uint64_t pos, std::uint8_t* dest)
   {
-    std::memcpy(dest, m_mapped.begin() + (m_bytes * pos) + 49, m_bytes);
+    std::memcpy(dest, ptr_bd->get_bit_vector_from_hash(pos), m_bytes);
   }
 
   kindex::kindex() {}
@@ -55,6 +59,7 @@ namespace kmq {
 
   void kindex::init(std::size_t p)
   {
+    //TODO ADD CONFIG
     m_partitions[p] = std::make_unique<partition>(m_infos.get_partition(p), m_infos.nb_samples(), m_infos.bw());
   }
 

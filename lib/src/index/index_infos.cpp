@@ -36,7 +36,7 @@ namespace kmq {
 
   std::string index_infos::get_partition(std::size_t partition) const
   {
-    return fmt::format("{}/matrices/matrix_{}.cmbf", m_path, partition);
+    return fmt::format("{}/matrices/blocks{}", m_path, partition); //matrix_{}.cmbf
   }
 
   std::string index_infos::name() const

@@ -9,6 +9,7 @@
 
 
 #include <iostream>
+#include <BlockDecompressor.h>
 
 namespace kmq {
 
@@ -24,6 +25,7 @@ namespace kmq {
     private:
       int m_fd {0};
       mio::mmap_source m_mapped;
+      unique_ptr<BlockDecompressor> ptr_bd; //As pointer because I didn't implemented default constructor to BlockDecompressor
       std::size_t m_nb_samples {0};
       std::size_t m_bytes {0};
   };
