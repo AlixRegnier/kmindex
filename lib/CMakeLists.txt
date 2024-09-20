@@ -5,7 +5,6 @@ if (NOT APPLE)
   set(CMAKE_INSTALL_RPATH $ORIGIN)
 endif()
 
-
 file(GLOB_RECURSE KMINDEX_SOURCES "src/*.cpp")
 add_library(${KMINDEX_LIB} ${KMINDEX_SOURCES})
 
@@ -27,6 +26,8 @@ target_link_libraries(${KMINDEX_LIB} PUBLIC
   $<BUILD_INTERFACE:sha1h>
   $<BUILD_INTERFACE:semver>
   $<BUILD_INTERFACE:bitpack>
+  $<BUILD_INTERFACE:sdsl>
+  $<BUILD_INTERFACE:blockcompressor>
 )
 
 add_dependencies(${KMINDEX_LIB} deps)

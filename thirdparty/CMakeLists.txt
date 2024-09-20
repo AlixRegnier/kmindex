@@ -18,8 +18,14 @@ target_include_directories(bcli_lib SYSTEM INTERFACE ${THIRD_DIR}/bcli/include)
 
 add_library(kmtricks INTERFACE)
 target_include_directories(kmtricks SYSTEM INTERFACE ${THIRD_DIR}/kmtricks/include/)
-target_include_directories(kmtricks SYSTEM INTERFACE ${THIRD_DIR}/kmtricks/plugins/BlockCompressor/)
-target_include_directories(kmtricks SYSTEM INTERFACE ${THIRD_DIR}/kmtricks/thirdparty/sdsl-lite/include/)
+
+add_library(blockcompressor INTERFACE)
+target_include_directories(blockcompressor SYSTEM INTERFACE ${THIRD_DIR}/kmtricks/plugins/BlockCompressor/)
+target_link_libraries(blockcompressor INTERFACE ${THIRD_DIR}/kmtricks/build/plugins/)
+
+add_library(sdsl INTERFACE)
+target_include_directories(sdsl SYSTEM INTERFACE ${THIRD_DIR}/kmtricks/thirdparty/sdsl-lite/include/)
+target_link_libraries(sdsl INTERFACE sdsl)
 
 add_subdirectory(fmt)
 add_subdirectory(nlohmann_json)
