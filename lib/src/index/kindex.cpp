@@ -4,7 +4,7 @@
 #include <kmindex/query/query_results.hpp>
 #include <kmindex/index/kindex.hpp>
 #include <sys/mman.h>
-#include <BlockCompressorZSTD.h>
+#include <BlockDecompressorZSTD.h>
 
 namespace kmq {
 

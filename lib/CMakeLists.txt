@@ -27,6 +27,9 @@ target_link_libraries(${KMINDEX_LIB} PUBLIC
   $<BUILD_INTERFACE:sha1h>
   $<BUILD_INTERFACE:semver>
   $<BUILD_INTERFACE:bitpack>
+  $<BUILD_INTERFACE:BlockDecompressor>
+  $<BUILD_INTERFACE:zstd>
+  $<BUILD_INTERFACE:sdsl>
 )
 
 add_dependencies(${KMINDEX_LIB} deps)
@@ -34,6 +37,9 @@ add_dependencies(${KMINDEX_LIB} deps)
 target_include_directories(${KMINDEX_LIB} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/include>
   $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/thirdparty/kmtricks/plugins/BlockCompressor>
+  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/thirdparty/kmtricks/plugins/BlockCompressor/ZSTD>
+  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/thirdparty/kmtricks/plugins/BlockCompressor/LZMA>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 

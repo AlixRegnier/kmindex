@@ -16,16 +16,15 @@ include(GNUInstallDirs)
 add_library(bcli_lib INTERFACE)
 target_include_directories(bcli_lib SYSTEM INTERFACE ${THIRD_DIR}/bcli/include)
 
+
+
 add_library(kmtricks INTERFACE)
 target_include_directories(kmtricks SYSTEM INTERFACE ${THIRD_DIR}/kmtricks/include/)
 
-add_library(blockcompressor INTERFACE)
-target_include_directories(blockcompressor SYSTEM INTERFACE ${THIRD_DIR}/kmtricks/plugins/BlockCompressor/)
-target_link_libraries(blockcompressor INTERFACE ${THIRD_DIR}/kmtricks/build/plugins/)
-
-add_library(sdsl INTERFACE)
-target_include_directories(sdsl SYSTEM INTERFACE ${THIRD_DIR}/kmtricks/thirdparty/sdsl-lite/include/)
-target_link_libraries(sdsl INTERFACE sdsl)
+#BlockCompressor
+add_subdirectory(blockcompressor)
+add_subdirectory(zstd)
+add_subdirectory(sdsl)
 
 add_subdirectory(fmt)
 add_subdirectory(nlohmann_json)
@@ -91,6 +90,6 @@ add_library(atomic_queue INTERFACE)
 target_include_directories(atomic_queue SYSTEM INTERFACE ${THIRD_DIR}/atomic_queue/include)
 
 add_library(deps INTERFACE)
-add_dependencies(deps KSEQPP SWS mio_mmap xxhash zlib bcli_lib fmt kmtricks)
+add_dependencies(deps KSEQPP SWS mio_mmap xxhash zlib bcli_lib fmt kmtricks blockcompressor sdsl zstd)
 
 
