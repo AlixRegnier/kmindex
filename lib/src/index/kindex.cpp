@@ -4,6 +4,7 @@
 #include <kmindex/query/query_results.hpp>
 #include <kmindex/index/kindex.hpp>
 #include <sys/mman.h>
+#include <BlockCompressorZSTD.h>
 
 namespace kmq {
 
@@ -12,7 +13,7 @@ namespace kmq {
   {
     //matrix_path value is determined by a redefined index_infos function
     //blocks0 --- blocks0_ef
-    ptr_bd = std::make_unique<BlockDecompressor>(matrix_path + "/../../config_1024.cfg", matrix_path, matrix_path + "_ef");
+    ptr_bd = std::make_unique<BlockDecompressorZSTD>(matrix_path + "/../config.cfg", matrix_path, matrix_path + "_ef");
     /*m_fd = open(matrix_path.c_str(), O_RDONLY);
     m_mapped = mio::mmap_source(m_fd, 0, mio::map_entire_file);*/
     //posix_madvise(&m_mapped[0], m_mapped.length(), POSIX_MADV_SEQUENTIAL);
