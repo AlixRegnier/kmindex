@@ -22,9 +22,9 @@ add_library(kmtricks INTERFACE)
 target_include_directories(kmtricks SYSTEM INTERFACE ${THIRD_DIR}/kmtricks/include/)
 
 #BlockCompressor
-add_subdirectory(blockcompressor)
 add_subdirectory(zstd)
 add_subdirectory(sdsl)
+add_subdirectory(blockcompressor)
 
 add_subdirectory(fmt)
 add_subdirectory(nlohmann_json)
