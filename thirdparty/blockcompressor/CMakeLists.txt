@@ -1,18 +1,18 @@
-add_library(ConfigurationLiterate SHARED
+add_library(ConfigurationLiterate STATIC
   ${CMAKE_SOURCE_DIR}/thirdparty/kmtricks/plugins/BlockCompressor/ConfigurationLiterate.cpp
 )
 target_include_directories(ConfigurationLiterate PRIVATE
   ${CMAKE_SOURCE_DIR}/thirdparty/kmtricks/plugins/BlockCompressor
 )
 
-add_library(BlockDecompressor SHARED
+add_library(BlockDecompressor STATIC
   ${CMAKE_SOURCE_DIR}/thirdparty/kmtricks/plugins/BlockCompressor/BlockDecompressor.cpp
 )
 target_link_libraries(BlockDecompressor PUBLIC ConfigurationLiterate sdsl)
 target_include_directories(BlockDecompressor PRIVATE
   ${CMAKE_SOURCE_DIR}/thirdparty/kmtricks/plugins/BlockCompressor
 )
-add_library(BlockDecompressorZSTD SHARED
+add_library(BlockDecompressorZSTD STATIC
   ${CMAKE_SOURCE_DIR}/thirdparty/kmtricks/plugins/BlockCompressor/ZSTD/BlockDecompressorZSTD.cpp
 )
 target_include_directories(BlockDecompressorZSTD PUBLIC
