@@ -8,12 +8,10 @@
 
 namespace kmq {
 
-  partition::partition(const std::string& matrix_path, std::size_t nb_samples, std::size_t width)
+  partition::partition(const std::string& matrix_path, const std::string& config_path, std::size_t nb_samples, std::size_t width)
     : m_nb_samples(nb_samples), m_bytes(((nb_samples * width) + 7) / 8)
   {
-    //matrix_path value is determined by a redefined index_infos function
-    //blocks0 --- blocks0_ef
-    ptr_bd = std::make_unique<BlockDecompressorZSTD>(matrix_path + "/../config.cfg", matrix_path, matrix_path + "_ef");
+    ptr_bd = std::make_unique<BlockDecompressorZSTD>(config_path, matrix_path, matrix_path + "_ef");
     /*m_fd = open(matrix_path.c_str(), O_RDONLY);
     m_mapped = mio::mmap_source(m_fd, 0, mio::map_entire_file);*/
     //posix_madvise(&m_mapped[0], m_mapped.length(), POSIX_MADV_SEQUENTIAL);
@@ -59,8 +57,7 @@ namespace kmq {
 
   void kindex::init(std::size_t p)
   {
-    //TODO ADD CONFIG
-    m_partitions[p] = std::make_unique<partition>(m_infos.get_partition(p), m_infos.nb_samples(), m_infos.bw());
+    m_partitions[p] = std::make_unique<partition>(m_infos.get_partition(p), m_infos.get_compression_config(), m_infos.nb_samples(), m_infos.bw());
   }
 
   void kindex::unmap(std::size_t p)

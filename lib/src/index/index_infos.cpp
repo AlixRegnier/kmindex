@@ -39,6 +39,11 @@ namespace kmq {
     return fmt::format("{}/matrices/blocks{}", m_path, partition); //matrix_{}.cmbf
   }
 
+  std::string index_infos::get_compression_config() const
+  {
+    return fmt::format("{}/config.cfg", m_path);
+  }
+
   std::string index_infos::name() const
   {
     return m_name;

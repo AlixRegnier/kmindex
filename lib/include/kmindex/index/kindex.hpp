@@ -7,8 +7,6 @@
 #include <kmindex/spinlock.hpp>
 #include <mio/mmap.hpp>
 
-
-#include <iostream>
 #include <BlockDecompressor.h>
 
 namespace kmq {
@@ -16,7 +14,7 @@ namespace kmq {
   class partition
   {
     public:
-      partition(const std::string& matrix_path, std::size_t nb_samples, std::size_t width);
+      partition(const std::string& matrix_path, const std::string& config_path, std::size_t nb_samples, std::size_t width);
 
       ~partition();
 

@@ -52,6 +52,7 @@ namespace kmq {
       std::shared_ptr<km::HashWindow> get_hash_w() const;
       std::shared_ptr<km::Repartition> get_repartition() const;
       std::string get_partition(std::size_t partition) const;
+      std::string get_compression_config() const;
 
       std::string name() const;
       std::size_t bloom_size() const;
