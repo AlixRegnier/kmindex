@@ -4,6 +4,7 @@ BlockDecompressor::BlockDecompressor(const std::string& config_path, const std::
 
 BlockDecompressor::BlockDecompressor(const ConfigurationLiterate& config, const std::string& matrix_path, const std::string& ef_path, std::size_t header_size)
 {
+    this->matrix_path = matrix_path;
     this->config = ConfigurationLiterate(config);
     this->header_size = header_size;
 
@@ -20,20 +21,23 @@ BlockDecompressor::BlockDecompressor(const ConfigurationLiterate& config, const 
     BLOCK_DECODED_SIZE = bit_vector_size * config.get_bit_vectors_per_block();
 
     out_buffer.resize(BLOCK_DECODED_SIZE);
-    
     //Deserialize size + EF
     ef_in.open(ef_path, std::ifstream::binary);
     ef_in.read(reinterpret_cast<char*>(&ef_size), sizeof(std::uint64_t)); //Retrieve size
     sdsl::load(ef, ef_in);
     sdsl::util::init_support(ef_pos, &ef);
+
+    queries_per_block.resize(ef_size+1);
 }
 
 
 void BlockDecompressor::decode_block(std::size_t i)
 {
+    ++nb_decoded_blocks;
+
     //Retrieve from EF encoding the location of corresponding block and its size
     std::size_t pos_a = ef_pos(i+1);
-    std::size_t pos_b = ef_pos(i+2); 
+    std::size_t pos_b = ef_pos(i+2);
 
     std::size_t block_encoded_size = pos_b - pos_a;
 
@@ -41,7 +45,7 @@ void BlockDecompressor::decode_block(std::size_t i)
     in_buffer = matrix + pos_a + header_size;
 
     decoded_block_size = decompress_buffer(block_encoded_size);
-    
+
     //Check if decoded size match expected size (taking into account the possibility of a smaller last block)
     if(decoded_block_size != BLOCK_DECODED_SIZE && (i + 2 != ef_size))
         throw std::runtime_error("Decoded block got an unexpected size: " + std::to_string(decoded_block_size) + " (should have been " + std::to_string(BLOCK_DECODED_SIZE) + ")");
@@ -52,6 +56,12 @@ void BlockDecompressor::decode_block(std::size_t i)
 //Hash range must be shifted from 0 to maximum_hash-minimum_hash
 const std::uint8_t* BlockDecompressor::get_bit_vector_from_hash(std::uint64_t hash)
 {
+    ++nb_queries;
+
+    if(previous_hash > hash)
+	++nb_rollbacks;
+    previous_hash = hash;
+
     //Get block index
     std::uint64_t block_index = hash / config.get_bit_vectors_per_block();
     //Get index in block
@@ -66,12 +76,13 @@ const std::uint8_t* BlockDecompressor::get_bit_vector_from_hash(std::uint64_t ha
         return nullptr;
 
     //Avoid decompressing a block that was decompressed on last call
-    if(block_index != decoded_block_index || !read_once) 
+    if(block_index != decoded_block_index || !read_once)
     {
         read_once = true;
         decode_block(block_index);
     }
 
+    ++queries_per_block[block_index];
     //Return corresponding bit_vector
     return out_buffer.data() + hash_index * get_bit_vector_size();
 }
@@ -101,4 +112,10 @@ BlockDecompressor::~BlockDecompressor()
 {
     munmap(this->matrix, this->file_size);
     close(this->fd_matrix);
+    std::cout << matrix_path << "," << nb_queries << "," << nb_decoded_blocks << std::endl;
+    for(std::size_t i = 0; i < ef_size+1; ++i)
+    {
+        std::cout << i << "," << queries_per_block[i] << std::endl;
+    }
+    std::cout << "rollback: " << nb_rollbacks << std::endl;
 }

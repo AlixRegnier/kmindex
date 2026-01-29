@@ -10,11 +10,19 @@
 #include <algorithm>
 #include <sdsl/bit_vectors.hpp>
 #include <sys/mman.h>
+#include <string>
 
 //Class allowing decompression on fly / total decompression of compressed matrices
 //Instances are used for querying matrix lines or as decompressor 
 class BlockDecompressor
 {
+    private:
+        std::size_t nb_queries = 0;
+        std::size_t nb_decoded_blocks = 0;
+        std::string matrix_path;
+        std::vector<std::size_t> queries_per_block;
+	std::uint64_t previous_hash = 0;
+        std::size_t nb_rollbacks = 0;
     protected:
         //Properties
         ConfigurationLiterate config; //Configuration class { preset_level, bit_vectors_per_block, nb_samples }
